@@ -53,6 +53,7 @@ endif()
 if(BUILD_QT_GUI)
     target_compile_definitions(${APP_T} PUBLIC USE_GUI)
     target_link_libraries(${APP_T} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+    target_include_directories(${APP_T} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
     set_target_properties(${APP_T} PROPERTIES
         MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

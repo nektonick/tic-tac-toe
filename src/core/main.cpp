@@ -1,7 +1,7 @@
 ﻿#include <cstdlib>
-#ifdef USE_UI
+#ifdef USE_GUI
 #    include <QApplication>
-#    include "mainwindow.h"
+#    include "gui/mainwindow.h"
 #else
 #    include <iostream>
 #endif
@@ -26,7 +26,7 @@ int show_console(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-#ifdef USE_UI
+#ifdef USE_GUI
     return show_ui(argc, argv);
 #else
     return show_console(argc, argv);
