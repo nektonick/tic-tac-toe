@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.5)
+﻿cmake_minimum_required(VERSION 3.5)
 
 project(Tic-tac-toe VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(BUILD_QT_UI OFF)
@@ -21,14 +21,14 @@ endif()
 
 
 set(PROJECT_SOURCES
-    main.cpp
+    src/main.cpp
     )
 if(BUILD_QT_UI)
     set(PROJECT_SOURCES
         ${PROJECT_SOURCES}
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+        src/mainwindow.cpp
+        src/mainwindow.h
+        src/mainwindow.ui
         )
 endif()
 
