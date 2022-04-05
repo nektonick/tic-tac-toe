@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.5)
 
 project(Tic-tac-toe VERSION 0.1 LANGUAGES CXX)
 
@@ -21,15 +21,15 @@ endif()
 
 
 set(PROJECT_SOURCES
-        main.cpp
-)
+    main.cpp
+    )
 if(BUILD_QT_UI)
     set(PROJECT_SOURCES
         ${PROJECT_SOURCES}
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-    )
+        )
 endif()
 
 if(BUILD_QT_UI)
@@ -37,16 +37,16 @@ if(BUILD_QT_UI)
         qt_add_executable(${APP_T}
             MANUAL_FINALIZATION
             ${PROJECT_SOURCES}
-        )
+            )
     else()
         add_executable(${APP_T}
             ${PROJECT_SOURCES}
-        )
+            )
     endif()
 else()
     add_executable(${APP_T}
         ${PROJECT_SOURCES}
-    )
+        )
 endif()
 
 
@@ -60,7 +60,7 @@ if(BUILD_QT_UI)
         MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
         MACOSX_BUNDLE TRUE
         WIN32_EXECUTABLE TRUE
-    )
+        )
 endif()
 
 if(BUILD_QT_UI AND QT_VERSION_MAJOR EQUAL 6)
