@@ -6,11 +6,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(BUILD_QT_UI OFF)
+option(BUILD_QT_GUI OFF)
 
 set(APP_T Tic-tac-toe)
 
-if(BUILD_QT_UI)
+if(BUILD_QT_GUI)
     set(CMAKE_AUTOUIC ON)
     set(CMAKE_AUTOMOC ON)
     set(CMAKE_AUTORCC ON)
@@ -20,19 +20,19 @@ endif()
 
 
 
+file(GLOB files_in_directory CONFIGURE_DEPENDS "src/core/*")
 set(PROJECT_SOURCES
-    src/main.cpp
+    ${files_in_directory}
     )
-if(BUILD_QT_UI)
+if(BUILD_QT_GUI)
+    file(GLOB files_in_directory CONFIGURE_DEPENDS "src/gui/*")
     set(PROJECT_SOURCES
         ${PROJECT_SOURCES}
-        src/mainwindow.cpp
-        src/mainwindow.h
-        src/mainwindow.ui
+        ${files_in_directory}
         )
 endif()
 
-if(BUILD_QT_UI)
+if(BUILD_QT_GUI)
     if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         qt_add_executable(${APP_T}
             MANUAL_FINALIZATION
@@ -50,8 +50,8 @@ else()
 endif()
 
 
-if(BUILD_QT_UI)
-    target_compile_definitions(${APP_T} PUBLIC USE_UI)
+if(BUILD_QT_GUI)
+    target_compile_definitions(${APP_T} PUBLIC USE_GUI)
     target_link_libraries(${APP_T} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
     set_target_properties(${APP_T} PROPERTIES
@@ -63,6 +63,6 @@ if(BUILD_QT_UI)
         )
 endif()
 
-if(BUILD_QT_UI AND QT_VERSION_MAJOR EQUAL 6)
+if(BUILD_QT_GUI AND QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(${APP_T})
 endif()
