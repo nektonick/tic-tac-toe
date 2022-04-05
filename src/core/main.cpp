@@ -7,7 +7,7 @@
 #endif
 
 
-#ifdef USE_UI
+#ifdef USE_GUI
 int show_ui(int argc, char* argv[])
 {
     QApplication a(argc, argv);
