@@ -1,7 +1,8 @@
 ﻿#pragma once
-#include <cstdint>
-#include <stdexcept>
+#include <memory> // unique_ptr
+#include <optional>
 #include <vector>
+#include "input_output.h"
 
 
 class FieldSize
@@ -47,60 +48,20 @@ private:
 };
 
 
-class FieldCellPosition
+class Cell
 {
 public:
-    // we start counting from zero
-    FieldCellPosition(int64_t row, int64_t column)
-        : row_(row)
-        , column_(column)
-    {
-        if(row_ < 0) {
-            throw std::invalid_argument("Invalid row");
-        }
-        if(column_ < 0) {
-            throw std::invalid_argument("Invalid column");
-        }
-    }
-
-    uint64_t getRow() const noexcept
-    {
-        return row_;
-    }
-
-    uint64_t getColumn() const noexcept
-    {
-        return column_;
-    }
-
-private:
-    const uint64_t row_;
-    const uint64_t column_;
-};
-
-
-class FieldCell
-{
-public:
-    enum class State : uint8_t
-    {
-        none,
-        x, // cross
-        o // nought
-    };
-
-
-    FieldCell()
-        : state_(State::none)
+    Cell() noexcept
+        : state_(std::nullopt)
     {
     }
 
     bool isEmpty() const noexcept
     {
-        return state_ == State::none;
+        return state_ == std::nullopt;
     }
 
-    void updateState(State newState)
+    void updateState(CellContent newState)
     {
         if(!isEmpty()) {
             throw std::logic_error("Already set");
@@ -108,15 +69,20 @@ public:
         state_ = newState;
     }
 
-    State getState() const noexcept
+    void resetState() noexcept
+    {
+        state_ = std::nullopt;
+    }
+
+    std::optional<CellContent> getState() const noexcept
     {
         return state_;
     }
 
 private:
-    State state_;
+    std::optional<CellContent> state_;
 };
-using CellsRow = std::vector<FieldCell>;
+using CellsRow = std::vector<Cell>;
 using CellsGrid = std::vector<CellsRow>;
 
 
@@ -125,11 +91,16 @@ class Field
 public:
     explicit Field(FieldSize size)
         : size_(size)
-        , grid_(size.getRowsCount(), CellsRow{size.getColumnsCount(), FieldCell{}})
+        , grid_(size.getRowsCount(), CellsRow{size.getColumnsCount(), Cell{}})
     {
+#ifdef USE_GUI
+        input_output_ = std::make_unique<GUI_InputOutput>();
+#else
+        input_output_ = std::make_unique<Console_InputOutut>();
+#endif
     }
 
-    void updateCellOnPosition(const FieldCellPosition& position, FieldCell::State newState)
+    void updateCellOnPosition(const CellPosition& position, CellContent newState)
     {
         if(!isPositionCorrect(position)) {
             throw std::invalid_argument("invalid position");
@@ -141,15 +112,11 @@ public:
 
     void render()
     {
-        for(const auto& row : grid_) {
-            for(const auto& cell : row) {
-                // TODO
-            }
-        }
+        input_output_->draw(grid_);
     }
 
 private:
-    bool isPositionCorrect(const FieldCellPosition& position) const noexcept
+    bool isPositionCorrect(const CellPosition& position) const noexcept
     {
         if(position.getRow() >= size_.getRowsCount()) {
             return false;
@@ -163,4 +130,5 @@ private:
 
     FieldSize size_;
     CellsGrid grid_;
+    std::unique_ptr<I_InputOutput> input_output_;
 };
