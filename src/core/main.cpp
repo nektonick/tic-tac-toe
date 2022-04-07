@@ -1,4 +1,6 @@
 ﻿#include <cstdlib>
+#include "game.h"
+
 #ifdef USE_GUI
 #    include <QApplication>
 #    include "gui/mainwindow.h"
@@ -7,17 +9,20 @@
 #endif
 
 
+// TODO: get players types and filed size from params
 #ifdef USE_GUI
-int show_ui(int argc, char* argv[])
+int run_in_gui(int argc, char* argv[])
 {
+    Game game(GameSettings(FieldSize(), PlayerType::human, PlayerType::AI));
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
     return a.exec();
 }
 #else
-int show_console(int argc, char* argv[])
+int run_in_console(int argc, char* argv[])
 {
+    Game game(GameSettings(FieldSize(), PlayerType::human, PlayerType::AI));
     std::cout << "App is under development" << std::endl;
     return EXIT_SUCCESS;
 }
@@ -27,8 +32,8 @@ int show_console(int argc, char* argv[])
 int main(int argc, char* argv[])
 {
 #ifdef USE_GUI
-    return show_ui(argc, argv);
+    return run_in_gui(argc, argv);
 #else
-    return show_console(argc, argv);
+    return run_in_console(argc, argv);
 #endif
 }
