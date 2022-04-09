@@ -1,0 +1,5 @@
+﻿set(APP_T Tic-tac-toe-console)
+file(GLOB project_sources CONFIGURE_DEPENDS "*.h" "*.cpp")
+source_group(src FILES ${project_sources})
+add_executable(${APP_T} ${project_sources})
+target_link_libraries(${APP_T} PRIVATE Tic-tac-toe-core)

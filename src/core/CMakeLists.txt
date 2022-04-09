@@ -1,0 +1,5 @@
+﻿set(LIB_T Tic-tac-toe-core)
+file(GLOB project_sources CONFIGURE_DEPENDS "*.h" "*.cpp")
+source_group(src FILES ${project_sources})
+add_library(${LIB_T} ${project_sources})
+target_include_directories(${LIB_T} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
