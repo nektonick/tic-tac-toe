@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <memory> // unique_ptr
 #include <optional>
 #include <vector>
 #include "input_output.h"
@@ -93,11 +92,6 @@ public:
         : size_(size)
         , grid_(size.getRowsCount(), CellsRow{size.getColumnsCount(), Cell{}})
     {
-#ifdef USE_GUI
-        input_output_ = std::make_unique<GUI_InputOutput>();
-#else
-        input_output_ = std::make_unique<Console_InputOutut>();
-#endif
     }
 
     void updateCellOnPosition(const CellPosition& position, CellContent newState)
@@ -108,11 +102,6 @@ public:
         auto& row = grid_.at(position.getRow());
         auto& cell = row.at(position.getColumn());
         cell.updateState(newState);
-    }
-
-    void render()
-    {
-        input_output_->draw(grid_);
     }
 
 private:
@@ -130,5 +119,4 @@ private:
 
     FieldSize size_;
     CellsGrid grid_;
-    std::unique_ptr<I_InputOutput> input_output_;
 };

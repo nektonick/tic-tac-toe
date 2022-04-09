@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <memory> // unique_ptr
 #include "field.h"
 #include "player.h"
 

@@ -63,11 +63,6 @@ class Console_InputOutut final : public I_InputOutput
 public:
     void draw(const CellsGrid& grid) override
     {
-        for(const auto& row : grid) {
-            for(const auto& cell : row) {
-                // TODO
-            }
-        }
     }
     PlayerInput get_input() override
     {
