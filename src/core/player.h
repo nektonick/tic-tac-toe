@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <memory> // unique_ptr
 
 enum class PlayerType
 {
@@ -28,4 +29,11 @@ class Human_Player final : public I_Player
 {
 public:
     PlayerType getType() const noexcept;
+};
+
+
+class PlayersFabric
+{
+public:
+    static std::unique_ptr<I_Player> getPlayerOfType(PlayerType);
 };

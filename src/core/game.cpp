@@ -25,23 +25,7 @@ PlayerType GameSettings::getSecondPlayerType() const noexcept
 
 Game::Game(GameSettings settings)
     : field_(settings.getFiledSize())
+    , player1_(PlayersFabric::getPlayerOfType(settings.getFirstPlayerType()))
+    , player2_(PlayersFabric::getPlayerOfType(settings.getSecondPlayerType()))
 {
-    // TODO: create fabric method
-    switch(auto playerType = settings.getFirstPlayerType()) {
-    case PlayerType::AI:
-        player1_ = std::make_unique<AI_Player>();
-        break;
-    case PlayerType::human:
-        player1_ = std::make_unique<Human_Player>();
-        break;
-    }
-
-    switch(auto playerType = settings.getSecondPlayerType()) {
-    case PlayerType::AI:
-        player2_ = std::make_unique<AI_Player>();
-        break;
-    case PlayerType::human:
-        player2_ = std::make_unique<Human_Player>();
-        break;
-    }
 }
