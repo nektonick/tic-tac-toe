@@ -30,19 +30,3 @@ public:
     virtual void draw(const CellsGrid&) = 0;
     virtual PlayerInput get_input() = 0;
 };
-
-
-class GUI_InputOutput final : public I_InputOutput
-{
-public:
-    void draw(const CellsGrid&) override;
-    PlayerInput get_input() override;
-};
-
-
-class Console_InputOutut final : public I_InputOutput
-{
-public:
-    void draw(const CellsGrid& grid) override;
-    PlayerInput get_input() override;
-};
