@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <memory> // unique_ptr
 #include "field.h"
+#include "i_input_output.h"
 #include "player.h"
 
 
@@ -25,8 +26,22 @@ class Game
 public:
     Game(GameSettings settings);
 
+    void doTurn();
+
 private:
+    bool isGameFinished() const noexcept;
+    enum class Winner
+    {
+        player1,
+        player2
+    };
+    std::optional<Winner> getWinner() const noexcept;
+
+
     Field field_;
     std::unique_ptr<I_Player> player1_;
     std::unique_ptr<I_Player> player2_;
+
+    bool game_finished_{false};
+    bool is_player1_turn_{true};
 };

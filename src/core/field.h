@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <optional>
 #include <vector>
-#include "input_output.h"
+#include "base_types.h"
 
 
 class FieldSize
@@ -44,6 +44,7 @@ public:
     explicit Field(FieldSize size);
 
     void updateCellOnPosition(const CellPosition& position, CellContent newState);
+    const CellsGrid& getCellsInfo() const noexcept;
 
 private:
     bool isPositionCorrect(const CellPosition& position) const noexcept;
