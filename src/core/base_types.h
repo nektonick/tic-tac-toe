@@ -14,27 +14,10 @@ class CellPosition
 {
 public:
     // we start counting from zero
-    CellPosition(int64_t row, int64_t column)
-        : row_(row)
-        , column_(column)
-    {
-        if(row_ < 0) {
-            throw std::invalid_argument("Invalid row");
-        }
-        if(column_ < 0) {
-            throw std::invalid_argument("Invalid column");
-        }
-    }
+    CellPosition(int64_t row, int64_t column);
 
-    uint64_t getRow() const noexcept
-    {
-        return row_;
-    }
-
-    uint64_t getColumn() const noexcept
-    {
-        return column_;
-    }
+    uint64_t getRow() const noexcept;
+    uint64_t getColumn() const noexcept;
 
 private:
     const uint64_t row_;

@@ -12,21 +12,10 @@ using CellsGrid = std::vector<CellsRow>;
 class PlayerInput
 {
 public:
-    PlayerInput(CellContent symbol, CellPosition position)
-        : symbol_(symbol)
-        , position_(position)
-    {
-    }
+    PlayerInput(CellContent symbol, CellPosition position);
 
-    CellContent getSymbol() const noexcept
-    {
-        return symbol_;
-    }
-
-    CellPosition getPosition() const noexcept
-    {
-        return position_;
-    }
+    CellContent getSymbol() const noexcept;
+    CellPosition getPosition() const noexcept;
 
 private:
     CellContent symbol_;
@@ -46,27 +35,14 @@ public:
 class GUI_InputOutput final : public I_InputOutput
 {
 public:
-    void draw(const CellsGrid&) override
-    {
-        // TODO
-    }
-    PlayerInput get_input() override
-    {
-        // TODO
-        return PlayerInput(CellContent::x, CellPosition(0, 0));
-    }
+    void draw(const CellsGrid&) override;
+    PlayerInput get_input() override;
 };
 
 
 class Console_InputOutut final : public I_InputOutput
 {
 public:
-    void draw(const CellsGrid& grid) override
-    {
-    }
-    PlayerInput get_input() override
-    {
-        // TODO
-        return PlayerInput(CellContent::x, CellPosition(0, 0));
-    }
+    void draw(const CellsGrid& grid) override;
+    PlayerInput get_input() override;
 };

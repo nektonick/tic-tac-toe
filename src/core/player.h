@@ -20,18 +20,12 @@ public:
 class AI_Player final : public I_Player
 {
 public:
-    PlayerType getType() const noexcept
-    {
-        return PlayerType::AI;
-    }
+    PlayerType getType() const noexcept;
 };
 
 
 class Human_Player final : public I_Player
 {
 public:
-    PlayerType getType() const noexcept
-    {
-        return PlayerType::human;
-    }
+    PlayerType getType() const noexcept;
 };
