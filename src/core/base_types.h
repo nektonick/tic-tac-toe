@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 
-enum class CellContent
+enum class MarkType
 {
     x, // cross
     o // nought

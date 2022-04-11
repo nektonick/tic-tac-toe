@@ -44,7 +44,7 @@ bool Cell::isEmpty() const noexcept
     return state_ == std::nullopt;
 }
 
-void Cell::updateState(CellContent newState)
+void Cell::updateState(MarkType newState)
 {
     if(!isEmpty()) {
         throw std::logic_error("Already set");
@@ -57,7 +57,7 @@ void Cell::resetState() noexcept
     state_ = std::nullopt;
 }
 
-std::optional<CellContent> Cell::getState() const noexcept
+std::optional<MarkType> Cell::getState() const noexcept
 {
     return state_;
 }
@@ -65,18 +65,23 @@ std::optional<CellContent> Cell::getState() const noexcept
 
 Field::Field(FieldSize size)
     : size_(size)
-    , grid_(size.getRowsCount(), CellsRow{size.getColumnsCount(), Cell{}})
+    , cells_(std::make_shared<CellsGrid>(size.getRowsCount(), CellsRow{size.getColumnsCount(), Cell{}}))
 {
 }
 
-void Field::updateCellOnPosition(const CellPosition& position, CellContent newState)
+void Field::updateCellOnPosition(const CellPosition& position, MarkType newState)
 {
     if(!isPositionCorrect(position)) {
         throw std::invalid_argument("invalid position");
     }
-    auto& row = grid_.at(position.getRow());
+    auto& row = cells_->at(position.getRow());
     auto& cell = row.at(position.getColumn());
     cell.updateState(newState);
+}
+
+std::weak_ptr<CellsGrid> Field::getCellsInfo() const noexcept
+{
+    return cells_;
 }
 
 bool Field::isPositionCorrect(const CellPosition& position) const noexcept
