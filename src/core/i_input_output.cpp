@@ -1,12 +1,12 @@
 ﻿#include "i_input_output.h"
 
-PlayerInput::PlayerInput(CellContent symbol, CellPosition position)
+PlayerInput::PlayerInput(MarkType symbol, CellPosition position)
     : symbol_(symbol)
     , position_(position)
 {
 }
 
-CellContent PlayerInput::getSymbol() const noexcept
+MarkType PlayerInput::getSymbol() const noexcept
 {
     return symbol_;
 }

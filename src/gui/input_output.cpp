@@ -1,13 +1,30 @@
 ﻿#include "input_output.h"
+#include "field.h"
 
 
-void GUI_InputOutput::draw(const CellsGrid&)
+GUI_InputOutput::GUI_InputOutput()
+{
+    w.show();
+}
+
+void GUI_InputOutput::redrawField(const CellsGrid&)
 {
     // TODO
 }
 
-PlayerInput GUI_InputOutput::get_input()
+PlayerInput GUI_InputOutput::readPlayerInput()
 {
     // TODO
-    return PlayerInput(CellContent::x, CellPosition(0, 0));
+    return PlayerInput(MarkType::x, CellPosition(0, 0));
+}
+
+FieldSize GUI_InputOutput::readFieldSize()
+{
+    // TODO
+    return FieldSize();
+}
+
+void GUI_InputOutput::showMessage(std::string_view msg)
+{
+    // TODO
 }

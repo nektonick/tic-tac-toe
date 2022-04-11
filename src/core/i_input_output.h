@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <iostream>
+#include <string_view> // string_view is like const reference to std::string
 #include <vector>
 #include "base_types.h"
 
@@ -7,18 +8,19 @@
 class Cell;
 using CellsRow = std::vector<Cell>;
 using CellsGrid = std::vector<CellsRow>;
+class FieldSize;
 
 
 class PlayerInput
 {
 public:
-    PlayerInput(CellContent symbol, CellPosition position);
+    PlayerInput(MarkType symbol, CellPosition position);
 
-    CellContent getSymbol() const noexcept;
+    MarkType getSymbol() const noexcept;
     CellPosition getPosition() const noexcept;
 
 private:
-    CellContent symbol_;
+    MarkType symbol_;
     CellPosition position_;
 };
 
@@ -26,7 +28,11 @@ private:
 class I_InputOutput
 {
 public:
+    I_InputOutput() = default;
     virtual ~I_InputOutput() = default;
-    virtual void draw(const CellsGrid&) = 0;
-    virtual PlayerInput get_input() = 0;
+
+    virtual void redrawField(const CellsGrid& newFieldState) = 0;
+    virtual PlayerInput readPlayerInput() = 0;
+    virtual FieldSize readFieldSize() = 0;
+    virtual void showMessage(std::string_view msg) = 0;
 };
