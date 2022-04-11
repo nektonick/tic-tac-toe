@@ -1,16 +1,18 @@
 ﻿#include <QApplication>
 #include <cstdlib>
+#include "cmd_parser.h"
 #include "game.h"
-#include "mainwindow.h"
+#include "input_output.h"
 
 
-// TODO: get players types and filed size from params
 int run_in_gui(int argc, char* argv[])
 {
-    Game game(GameSettings(FieldSize(), PlayerType::human, PlayerType::AI));
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    auto settings = parseCmdParams(argc, argv);
+    auto input_output = std::make_unique<GUI_InputOutput>();
+    Game game(settings, std::move(input_output));
+    game.play();
+    // TODO: add restart option
     return a.exec();
 }
 

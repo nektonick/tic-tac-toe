@@ -8,14 +8,12 @@
 class GameSettings
 {
 public:
-    GameSettings(FieldSize field_size, PlayerType first_player_type, PlayerType second_player_type);
+    GameSettings(PlayerType first_player_type, PlayerType second_player_type);
 
-    FieldSize getFiledSize() const noexcept;
     PlayerType getFirstPlayerType() const noexcept;
     PlayerType getSecondPlayerType() const noexcept;
 
 private:
-    FieldSize field_size_;
     PlayerType first_player_type_;
     PlayerType second_player_type_;
 };
@@ -24,24 +22,29 @@ private:
 class Game
 {
 public:
-    Game(GameSettings settings);
+    Game(GameSettings, std::unique_ptr<I_InputOutput>);
 
-    void doTurn();
+    void play();
 
 private:
-    bool isGameFinished() const noexcept;
-    enum class Winner
+    void restart();
+    bool gameShouldBeContinued() const noexcept;
+    void doTurn();
+    enum class Status
     {
-        player1,
-        player2
+        player1_win,
+        player2_win,
+        ended_in_a_draw,
+        should_be_continued
     };
-    std::optional<Winner> getWinner() const noexcept;
+    Status getNewStatus();
+    void processGameEnd();
 
-
-    Field field_;
+    Status status_;
+    std::unique_ptr<Field> field_;
     std::unique_ptr<I_Player> player1_;
     std::unique_ptr<I_Player> player2_;
-
-    bool game_finished_{false};
+    std::unique_ptr<I_InputOutput> input_output_;
     bool is_player1_turn_{true};
+    uint64_t turn_number_{0};
 };
