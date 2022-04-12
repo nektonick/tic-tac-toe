@@ -4,7 +4,7 @@
 
 GUI_InputOutput::GUI_InputOutput()
 {
-    w.show();
+    w.renderField();
 }
 
 void GUI_InputOutput::redrawField(const CellsGrid&)

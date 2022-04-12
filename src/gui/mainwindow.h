@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <QGridLayout>
 #include <QMainWindow>
 
 // forward declaration of ui class
@@ -11,14 +12,19 @@ class MainWindow;
 QT_END_NAMESPACE
 
 
-class MainWindow : public QMainWindow
+class MainWindow : private QMainWindow
 {
     Q_OBJECT
 
 public:
     MainWindow(QWidget* parent = nullptr);
+    void renderField();
     ~MainWindow();
 
+private slots:
+    void onClicked();
+
 private:
-    Ui::MainWindow* ui;
+    std::unique_ptr<Ui::MainWindow> ui;
+    QGridLayout* layout = new QGridLayout;
 };
