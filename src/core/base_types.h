@@ -13,7 +13,8 @@ enum class MarkType
 class CellPosition
 {
 public:
-    // we start counting from zero
+    // We start counting from zero
+    // Input parameter is signed to avoid conversion from negative value to positive (-1 => 255 for uint8_t for example)
     CellPosition(int64_t row, int64_t column);
 
     uint64_t getRow() const noexcept;

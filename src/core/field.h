@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <memory>
 #include <optional>
 #include <vector>
 #include "base_types.h"
@@ -30,7 +29,6 @@ public:
 
     bool isEmpty() const noexcept;
     void updateState(MarkType newState);
-    void resetState() noexcept;
     std::optional<MarkType> getState() const noexcept;
 
 private:
@@ -45,12 +43,14 @@ class Field
 public:
     explicit Field(FieldSize size);
 
-    void updateCellOnPosition(const CellPosition& position, MarkType newState);
-    std::weak_ptr<CellsGrid> getCellsInfo() const noexcept;
+    void updateCellState(const CellPosition& position, MarkType newState);
+    std::optional<MarkType> getCellState(const CellPosition& position) const;
 
 private:
+    const Cell& getCellAt(const CellPosition& position) const;
+    Cell& getCellAt(const CellPosition& position); // The same as function above but non-const
     bool isPositionCorrect(const CellPosition& position) const noexcept;
 
     FieldSize size_;
-    std::shared_ptr<CellsGrid> cells_;
+    CellsGrid cells_;
 };

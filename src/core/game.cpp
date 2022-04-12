@@ -53,7 +53,7 @@ void Game::doTurn()
 
     auto cell_to_mark = current_player->selectCellToMark();
     auto mark = current_player->getMark();
-    field_->updateCellOnPosition(cell_to_mark, mark);
+    field_->updateCellState(cell_to_mark, mark);
     status_ = getNewStatus();
     ++turn_number_;
 }

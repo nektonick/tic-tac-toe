@@ -52,11 +52,6 @@ void Cell::updateState(MarkType newState)
     state_ = newState;
 }
 
-void Cell::resetState() noexcept
-{
-    state_ = std::nullopt;
-}
-
 std::optional<MarkType> Cell::getState() const noexcept
 {
     return state_;
@@ -65,23 +60,37 @@ std::optional<MarkType> Cell::getState() const noexcept
 
 Field::Field(FieldSize size)
     : size_(size)
-    , cells_(std::make_shared<CellsGrid>(size.getRowsCount(), CellsRow{size.getColumnsCount(), Cell{}}))
+    , cells_(CellsGrid(size.getRowsCount(), CellsRow{size.getColumnsCount(), Cell{}}))
 {
 }
 
-void Field::updateCellOnPosition(const CellPosition& position, MarkType newState)
+void Field::updateCellState(const CellPosition& position, MarkType newState)
+{
+    auto& cell = getCellAt(position);
+    cell.updateState(newState);
+}
+
+std::optional<MarkType> Field::getCellState(const CellPosition& position) const
+{
+    const auto& cell = getCellAt(position);
+    return cell.getState();
+}
+
+const Cell& Field::getCellAt(const CellPosition& position) const
 {
     if(!isPositionCorrect(position)) {
         throw std::invalid_argument("invalid position");
     }
-    auto& row = cells_->at(position.getRow());
+    auto& row = cells_.at(position.getRow());
     auto& cell = row.at(position.getColumn());
-    cell.updateState(newState);
+    return cell;
 }
 
-std::weak_ptr<CellsGrid> Field::getCellsInfo() const noexcept
+Cell& Field::getCellAt(const CellPosition& position)
 {
-    return cells_;
+    // Some magic, see link below for explanation
+    // https://stackoverflow.com/questions/123758/how-do-i-remove-code-duplication-between-similar-const-and-non-const-member-func
+    return const_cast<Cell&>(std::as_const(*this).getCellAt(position));
 }
 
 bool Field::isPositionCorrect(const CellPosition& position) const noexcept
