@@ -2,20 +2,20 @@
 #include "field.h"
 
 
-GUI_InputOutput::GUI_InputOutput()
+GUI_InputOutput::GUI_InputOutput(std::shared_ptr<MainWindow> gui)
 {
-    w.renderField();
+    gui->renderField();
 }
 
-void GUI_InputOutput::redrawField(const CellsGrid&)
+void GUI_InputOutput::redrawField(std::shared_ptr<Field> field)
 {
     // TODO
 }
 
-PlayerInput GUI_InputOutput::readPlayerInput()
+CellPosition GUI_InputOutput::readPlayerInput()
 {
     // TODO
-    return PlayerInput(MarkType::x, CellPosition(0, 0));
+    return CellPosition(0, 0);
 }
 
 FieldSize GUI_InputOutput::readFieldSize()

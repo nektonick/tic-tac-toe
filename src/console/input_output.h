@@ -1,12 +1,12 @@
 ﻿#pragma once
-#include "i_input_output.h"
+#include "i_input_output.hpp"
 
 
 class Console_InputOutut final : public I_InputOutput
 {
 public:
-    void redrawField(const CellsGrid& grid) override;
-    PlayerInput readPlayerInput() override;
+    void redrawField(std::shared_ptr<Field> field) override;
+    CellPosition readPlayerInput() override;
     FieldSize readFieldSize() override;
     void showMessage(std::string_view msg) override;
 };

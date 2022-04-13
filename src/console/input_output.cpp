@@ -2,14 +2,15 @@
 #include "field.h"
 
 
-void Console_InputOutut::redrawField(const CellsGrid& grid)
-{
-}
-
-PlayerInput Console_InputOutut::readPlayerInput()
+void Console_InputOutut::redrawField(std::shared_ptr<Field> field)
 {
     // TODO
-    return PlayerInput(MarkType::x, CellPosition(0, 0));
+}
+
+CellPosition Console_InputOutut::readPlayerInput()
+{
+    // TODO
+    return CellPosition(0, 0);
 }
 
 FieldSize Console_InputOutut::readFieldSize()
