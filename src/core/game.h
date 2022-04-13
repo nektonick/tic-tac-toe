@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <memory> // unique_ptr
 #include "field.h"
-#include "i_input_output.h"
+#include "i_input_output.hpp"
 #include "player.h"
 
 
@@ -22,7 +22,7 @@ private:
 class Game
 {
 public:
-    Game(GameSettings, std::unique_ptr<I_InputOutput>);
+    Game(GameSettings, std::unique_ptr<I_InputOutput> input_output_interface);
 
     void play();
 
@@ -41,10 +41,10 @@ private:
     void processGameEnd();
 
     Status status_;
-    std::unique_ptr<Field> field_;
+    std::shared_ptr<I_InputOutput> input_output_; // shared with human players
+    std::shared_ptr<Field> field_; // shared with AI_module
     std::unique_ptr<I_Player> player1_;
     std::unique_ptr<I_Player> player2_;
-    std::unique_ptr<I_InputOutput> input_output_;
     bool is_player1_turn_{true};
     uint64_t turn_number_{0};
 };

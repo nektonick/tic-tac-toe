@@ -8,8 +8,9 @@
 int run_in_gui(int argc, char* argv[])
 {
     QApplication a(argc, argv);
+    auto window = std::make_shared<MainWindow>();
     auto settings = parseCmdParams(argc, argv);
-    auto input_output = std::make_unique<GUI_InputOutput>();
+    auto input_output = std::make_unique<GUI_InputOutput>(window);
     Game game(settings, std::move(input_output));
     game.play();
     // TODO: add restart option

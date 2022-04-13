@@ -18,10 +18,10 @@ PlayerType GameSettings::getSecondPlayerType() const noexcept
 
 
 Game::Game(GameSettings settings, std::unique_ptr<I_InputOutput> input_output)
-    : field_(nullptr) // Will be created in play() function
-    , player1_(PlayersFabric::getPlayerOfType(settings.getFirstPlayerType(), MarkType::x))
-    , player2_(PlayersFabric::getPlayerOfType(settings.getSecondPlayerType(), MarkType::o))
-    , input_output_(std::move(input_output))
+    : input_output_(std::move(input_output))
+    , field_(std::make_unique<Field>(input_output_->readFieldSize()))
+    , player1_(PlayersFabric::getPlayerOfType(settings.getFirstPlayerType(), MarkType::x, input_output_, field_))
+    , player2_(PlayersFabric::getPlayerOfType(settings.getSecondPlayerType(), MarkType::o, input_output_, field_))
 {
 }
 
@@ -36,7 +36,7 @@ void Game::play()
 
 void Game::restart()
 {
-    field_ = std::make_unique<Field>(input_output_->readFieldSize());
+    field_->clear();
     is_player1_turn_ = true;
     turn_number_ = 0;
     status_ = getNewStatus();
@@ -51,9 +51,11 @@ void Game::doTurn()
 {
     auto& current_player = is_player1_turn_ ? player1_ : player2_;
 
-    auto cell_to_mark = current_player->selectCellToMark();
     auto mark = current_player->getMark();
+    auto cell_to_mark = current_player->selectCellToMark();
     field_->updateCellState(cell_to_mark, mark);
+    input_output_->redrawField(field_);
+
     status_ = getNewStatus();
     ++turn_number_;
 }

@@ -76,6 +76,12 @@ std::optional<MarkType> Field::getCellState(const CellPosition& position) const
     return cell.getState();
 }
 
+void Field::clear()
+{
+    // TODO: alternative: update cells state in loop
+    cells_ = CellsGrid(size_.getRowsCount(), CellsRow{size_.getColumnsCount(), Cell{}});
+}
+
 const Cell& Field::getCellAt(const CellPosition& position) const
 {
     if(!isPositionCorrect(position)) {

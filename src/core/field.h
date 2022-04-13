@@ -46,6 +46,8 @@ public:
     void updateCellState(const CellPosition& position, MarkType newState);
     std::optional<MarkType> getCellState(const CellPosition& position) const;
 
+    void clear();
+
 private:
     const Cell& getCellAt(const CellPosition& position) const;
     Cell& getCellAt(const CellPosition& position); // The same as function above but non-const
