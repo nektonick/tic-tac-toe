@@ -17,10 +17,11 @@ public:
     // Input parameter is signed to avoid conversion from negative value to positive (-1 => 255 for uint8_t for example)
     CellPosition(int64_t row, int64_t column);
 
-    uint64_t getRow() const noexcept;
-    uint64_t getColumn() const noexcept;
+    // NOTE: max positive value of int64_t is the same as max positive value of uint32_t
+    uint32_t getRow() const noexcept;
+    uint32_t getColumn() const noexcept;
 
 private:
-    const uint64_t row_;
-    const uint64_t column_;
+    uint64_t row_;
+    uint64_t column_;
 };

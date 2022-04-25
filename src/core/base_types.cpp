@@ -12,12 +12,12 @@ CellPosition::CellPosition(int64_t row, int64_t column)
     }
 }
 
-uint64_t CellPosition::getRow() const noexcept
+uint32_t CellPosition::getRow() const noexcept
 {
     return row_;
 }
 
-uint64_t CellPosition::getColumn() const noexcept
+uint32_t CellPosition::getColumn() const noexcept
 {
     return column_;
 }

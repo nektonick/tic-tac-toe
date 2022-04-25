@@ -19,7 +19,7 @@ PlayerType GameSettings::getSecondPlayerType() const noexcept
 
 Game::Game(GameSettings settings, std::unique_ptr<I_InputOutput> input_output)
     : input_output_(std::move(input_output))
-    , field_(std::make_unique<Field>(input_output_->readFieldSize()))
+    , field_(std::make_shared<Field>())
     , player1_(PlayersFabric::getPlayerOfType(settings.getFirstPlayerType(), MarkType::x, input_output_, field_))
     , player2_(PlayersFabric::getPlayerOfType(settings.getSecondPlayerType(), MarkType::o, input_output_, field_))
 {
@@ -27,19 +27,27 @@ Game::Game(GameSettings settings, std::unique_ptr<I_InputOutput> input_output)
 
 void Game::play()
 {
-    restart();
-    while(gameShouldBeContinued()) {
-        doTurn();
+    try {
+        restart();
+        while(gameShouldBeContinued()) {
+            doTurn();
+        }
+        processGameEnd();
+    } catch(const std::exception& e) {
+        input_output_->showMessage(std::string("Error: ") + e.what());
+        // TODO: ask about restart
     }
-    processGameEnd();
 }
 
 void Game::restart()
 {
-    field_->clear();
+    auto newSize = input_output_->readFieldSize();
+    field_->reset(newSize);
     is_player1_turn_ = true;
     turn_number_ = 0;
     status_ = getNewStatus();
+    input_output_->initField(field_);
+    input_output_->updateField(field_);
 }
 
 bool Game::gameShouldBeContinued() const noexcept
@@ -50,14 +58,14 @@ bool Game::gameShouldBeContinued() const noexcept
 void Game::doTurn()
 {
     auto& current_player = is_player1_turn_ ? player1_ : player2_;
-
     auto mark = current_player->getMark();
     auto cell_to_mark = current_player->selectCellToMark();
     field_->updateCellState(cell_to_mark, mark);
-    input_output_->redrawField(field_);
-
     status_ = getNewStatus();
     ++turn_number_;
+    is_player1_turn_ = !is_player1_turn_;
+
+    input_output_->updateField(field_);
 }
 Game::Status Game::getNewStatus()
 {
@@ -73,7 +81,7 @@ Game::Status Game::getNewStatus()
      */
 
     // TODO
-    return Status::ended_in_a_draw;
+    return Status::should_be_continued;
 }
 
 void Game::processGameEnd()

@@ -33,12 +33,6 @@ uint64_t FieldSize::getColumnsCount() const noexcept
     return columns_count_;
 }
 
-
-Cell::Cell() noexcept
-    : state_(std::nullopt)
-{
-}
-
 bool Cell::isEmpty() const noexcept
 {
     return state_ == std::nullopt;
@@ -58,10 +52,20 @@ std::optional<MarkType> Cell::getState() const noexcept
 }
 
 
+Field::Field()
+    : Field(FieldSize())
+{
+}
+
 Field::Field(FieldSize size)
     : size_(size)
     , cells_(CellsGrid(size.getRowsCount(), CellsRow{size.getColumnsCount(), Cell{}}))
 {
+}
+
+FieldSize Field::getSize() const noexcept
+{
+    return size_;
 }
 
 void Field::updateCellState(const CellPosition& position, MarkType newState)
@@ -76,10 +80,11 @@ std::optional<MarkType> Field::getCellState(const CellPosition& position) const
     return cell.getState();
 }
 
-void Field::clear()
+void Field::reset(FieldSize newSize)
 {
+    size_ = newSize;
     // TODO: alternative: update cells state in loop
-    cells_ = CellsGrid(size_.getRowsCount(), CellsRow{size_.getColumnsCount(), Cell{}});
+    cells_ = CellsGrid(size_.getRowsCount(), CellsRow{size_.getColumnsCount(), Cell()});
 }
 
 const Cell& Field::getCellAt(const CellPosition& position) const

@@ -1,7 +1,7 @@
 ﻿#include "cmd_parser.h"
 #include "game.h" //
 
-GameSettings parseCmdParams(int argc, char* argv[])
+GameSettings parseCmdParams(int, char*[])
 {
     // TODO (optional): parse cmd params (see boost program option)
     GameSettings settings(PlayerType::human, PlayerType::AI);
