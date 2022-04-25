@@ -16,8 +16,11 @@ public:
     I_InputOutput() = default;
     virtual ~I_InputOutput() = default;
 
-    virtual void redrawField(std::shared_ptr<Field> field) = 0;
-    virtual CellPosition readPlayerInput() = 0;
     virtual FieldSize readFieldSize() = 0;
+    virtual void initField(std::shared_ptr<Field> field) = 0;
+    virtual void updateField(std::shared_ptr<Field> field) = 0;
+
+    virtual CellPosition readPlayerInput() = 0;
+
     virtual void showMessage(std::string_view msg) = 0;
 };
