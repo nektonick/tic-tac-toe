@@ -1,9 +1,13 @@
 ﻿#include "game.h"
 
-GameSettings::GameSettings(PlayerType first_player_type, PlayerType second_player_type)
+GameSettings::GameSettings(PlayerType first_player_type, PlayerType second_player_type, int64_t cells_in_line_to_win)
     : first_player_type_(first_player_type)
     , second_player_type_(second_player_type)
+    , cells_in_line_to_win_(cells_in_line_to_win)
 {
+    if(cells_in_line_to_win_ <= 1) {
+        throw std::invalid_argument("Invalid 'cells in line to win' count");
+    }
 }
 
 PlayerType GameSettings::getFirstPlayerType() const noexcept
@@ -14,6 +18,11 @@ PlayerType GameSettings::getFirstPlayerType() const noexcept
 PlayerType GameSettings::getSecondPlayerType() const noexcept
 {
     return second_player_type_;
+}
+
+uint32_t GameSettings::getCellsInLineToWin() const noexcept
+{
+    return cells_in_line_to_win_;
 }
 
 

@@ -4,6 +4,7 @@
 GameSettings parseCmdParams(int, char*[])
 {
     // TODO (optional): parse cmd params (see boost program option)
-    GameSettings settings(PlayerType::human, PlayerType::AI);
+    const int cellsInLineToWin = 3;
+    GameSettings settings(PlayerType::human, PlayerType::AI, cellsInLineToWin);
     return settings;
 }

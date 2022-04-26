@@ -8,14 +8,16 @@
 class GameSettings
 {
 public:
-    GameSettings(PlayerType first_player_type, PlayerType second_player_type);
+    GameSettings(PlayerType first_player_type, PlayerType second_player_type, int64_t cells_in_line_to_win);
 
     PlayerType getFirstPlayerType() const noexcept;
     PlayerType getSecondPlayerType() const noexcept;
+    uint32_t getCellsInLineToWin() const noexcept;
 
 private:
     PlayerType first_player_type_;
     PlayerType second_player_type_;
+    uint32_t cells_in_line_to_win_;
 };
 
 
