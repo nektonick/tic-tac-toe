@@ -1,4 +1,4 @@
-#include "input_output.h"
+﻿#include "input_output.h"
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPushButton>
@@ -43,7 +43,7 @@ FieldSize GUI_InputOutput::readFieldSize()
 
 void GUI_InputOutput::initField(std::shared_ptr<Field> field)
 {
-    auto size = field->getSize();
+    auto size = field->getFieldSize();
     gridLayout = new QGridLayout();
     for(uint32_t row = 0; row < size.getRowsCount(); ++row) {
         for(uint32_t column = 0; column < size.getColumnsCount(); ++column) {

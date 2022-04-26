@@ -27,12 +27,12 @@ class Cell
 public:
     Cell() = default;
 
-    bool isEmpty() const noexcept;
-    void updateState(MarkType newState);
-    std::optional<MarkType> getState() const noexcept;
+    bool isMarked() const noexcept;
+    void mark(MarkType);
+    std::optional<MarkType> getMark() const noexcept;
 
 private:
-    std::optional<MarkType> state_;
+    std::optional<MarkType> mark_;
 };
 using CellsRow = std::vector<Cell>;
 using CellsGrid = std::vector<CellsRow>;
@@ -43,13 +43,15 @@ class Field
 public:
     Field();
     explicit Field(FieldSize size);
-
-    FieldSize getSize() const noexcept;
-
-    void updateCellState(const CellPosition& position, MarkType newState);
-    std::optional<MarkType> getCellState(const CellPosition& position) const;
-
     void reset(FieldSize newSize);
+
+    FieldSize getFieldSize() const noexcept;
+    bool isAllCellsMarked() const noexcept;
+    bool isFieldContainsSomeMarksConsecutive(MarkType, uint32_t requiredMarksCount) const noexcept;
+    std::optional<MarkType> getCellMark(const CellPosition& position) const;
+
+    // NOTE: cell can't be re-marked
+    void markCell(const CellPosition& position, MarkType mark);
 
 private:
     const Cell& getCellAt(const CellPosition& position) const;
@@ -58,4 +60,5 @@ private:
 
     FieldSize size_;
     CellsGrid cells_;
+    uint64_t markedCellsCount_ = 0;
 };

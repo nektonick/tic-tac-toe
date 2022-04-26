@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <memory> // unique_ptr
 #include "field.h"
 #include "i_input_output.hpp"
@@ -23,9 +23,10 @@ private:
         ended_in_a_draw,
         should_be_continued
     };
-    Status getNewStatus();
+    Status getNewStatus(bool isPlayer1JustEndItsTurn);
     void processGameEnd();
 
+    uint32_t cellsInRowToWin_ = 3;
     Status status_;
     std::shared_ptr<I_InputOutput> input_output_; // shared with human players
     std::shared_ptr<Field> field_; // shared with AI_module

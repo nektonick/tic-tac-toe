@@ -33,22 +33,22 @@ uint64_t FieldSize::getColumnsCount() const noexcept
     return columns_count_;
 }
 
-bool Cell::isEmpty() const noexcept
+bool Cell::isMarked() const noexcept
 {
-    return state_ == std::nullopt;
+    return mark_ != std::nullopt;
 }
 
-void Cell::updateState(MarkType newState)
+void Cell::mark(MarkType mark)
 {
-    if(!isEmpty()) {
-        throw std::logic_error("Already set");
+    if(isMarked()) {
+        throw std::logic_error("This cell already marked");
     }
-    state_ = newState;
+    mark_ = mark;
 }
 
-std::optional<MarkType> Cell::getState() const noexcept
+std::optional<MarkType> Cell::getMark() const noexcept
 {
-    return state_;
+    return mark_;
 }
 
 
@@ -63,28 +63,76 @@ Field::Field(FieldSize size)
 {
 }
 
-FieldSize Field::getSize() const noexcept
+FieldSize Field::getFieldSize() const noexcept
 {
     return size_;
 }
 
-void Field::updateCellState(const CellPosition& position, MarkType newState)
+void Field::markCell(const CellPosition& position, MarkType mark)
 {
     auto& cell = getCellAt(position);
-    cell.updateState(newState);
+    cell.mark(mark);
+    markedCellsCount_ += 1;
 }
 
-std::optional<MarkType> Field::getCellState(const CellPosition& position) const
+std::optional<MarkType> Field::getCellMark(const CellPosition& position) const
 {
     const auto& cell = getCellAt(position);
-    return cell.getState();
+    return cell.getMark();
+}
+
+bool Field::isAllCellsMarked() const noexcept
+{
+    // NOTE: potential overflow here if RowsCount is too much
+    uint64_t totalCellsCount = size_.getRowsCount() * size_.getColumnsCount();
+    return markedCellsCount_ == totalCellsCount;
+}
+
+bool Field::isFieldContainsSomeMarksConsecutive(MarkType mark, uint32_t requiredMarksCount) const noexcept
+{
+    // going to check rows, columns and diagonals
+
+    for(uint64_t row = 0; row < size_.getRowsCount(); ++row) {
+        uint32_t numberOfMarksInRow = 0;
+        for(uint64_t column = 0; column < size_.getColumnsCount(); ++column) {
+            auto currentMark = cells_[row][column].getMark();
+            if(currentMark.has_value() && currentMark.value() == mark) {
+                numberOfMarksInRow += 1;
+            } else {
+                numberOfMarksInRow = 0;
+            }
+            if(numberOfMarksInRow >= requiredMarksCount) {
+                return true;
+            }
+        }
+    }
+
+    for(uint64_t column = 0; column < size_.getColumnsCount(); ++column) {
+        uint32_t numberOfMarksInRow = 0; // inRow here mean 'successively'
+        for(uint64_t row = 0; row < size_.getRowsCount(); ++row) {
+            auto currentMark = cells_[row][column].getMark();
+            if(currentMark.has_value() && currentMark.value() == mark) {
+                numberOfMarksInRow += 1;
+            } else {
+                numberOfMarksInRow = 0;
+            }
+            if(numberOfMarksInRow >= requiredMarksCount) {
+                return true;
+            }
+        }
+    }
+
+    // TODO: diagonals
+
+    return false;
 }
 
 void Field::reset(FieldSize newSize)
 {
     size_ = newSize;
-    // TODO: alternative: update cells state in loop
+    // TODO: alternative: update cells state in loop if we don't want to recreate cells
     cells_ = CellsGrid(size_.getRowsCount(), CellsRow{size_.getColumnsCount(), Cell()});
+    markedCellsCount_ = 0;
 }
 
 const Cell& Field::getCellAt(const CellPosition& position) const

@@ -1,4 +1,4 @@
-#include "game.h"
+﻿#include "game.h"
 
 Game::Game(std::unique_ptr<I_InputOutput> input_output)
     : input_output_(std::move(input_output))
@@ -28,10 +28,12 @@ void Game::play()
 void Game::restart()
 {
     auto newSize = input_output_->readFieldSize();
+    auto maxAllowedCellsInRowToWinCount = std::max(newSize.getColumnsCount(), newSize.getRowsCount()); // TODO: validate
+    cellsInRowToWin_ = input_output_->getCellsInRowToWinCount(maxAllowedCellsInRowToWinCount);
     field_->reset(newSize);
     is_player1_turn_ = true;
     turn_number_ = 0;
-    status_ = getNewStatus();
+    status_ = getNewStatus(is_player1_turn_);
     input_output_->initField(field_);
     input_output_->updateField(field_);
 }
@@ -46,14 +48,14 @@ void Game::doTurn()
     auto& current_player = is_player1_turn_ ? player1_ : player2_;
     auto mark = current_player->getMark();
     auto cell_to_mark = current_player->selectCellToMark();
-    field_->updateCellState(cell_to_mark, mark);
-    status_ = getNewStatus();
+    field_->markCell(cell_to_mark, mark);
+    status_ = getNewStatus(is_player1_turn_);
     ++turn_number_;
     is_player1_turn_ = !is_player1_turn_;
 
     input_output_->updateField(field_);
 }
-Game::Status Game::getNewStatus()
+Game::Status Game::getNewStatus(bool isPlayer1JustEndItsTurn)
 {
     /* Cases:
      * - all cells marked
@@ -66,7 +68,17 @@ Game::Status Game::getNewStatus()
      *   - game should be continued
      */
 
-    // TODO
+    // This function called after player turn, so we don't check is other player win
+    auto& current_player = isPlayer1JustEndItsTurn ? player1_ : player2_;
+    auto current_player_mark = current_player->getMark();
+    bool isCurrentPlayerWin = field_->isFieldContainsSomeMarksConsecutive(current_player_mark, cellsInRowToWin_);
+
+    if(isCurrentPlayerWin) {
+        return isPlayer1JustEndItsTurn ? Status::player1_win : Status::player2_win;
+    }
+    if(field_->isAllCellsMarked()) {
+        return Status::ended_in_a_draw;
+    }
     return Status::should_be_continued;
 }
 
