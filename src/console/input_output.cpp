@@ -1,5 +1,6 @@
 ﻿#include "input_output.h"
 #include "field.h"
+#include "player.h"
 
 
 FieldSize Console_InputOutut::readFieldSize()
@@ -16,6 +17,18 @@ void Console_InputOutut::initField(std::shared_ptr<Field> field)
 void Console_InputOutut::updateField(std::shared_ptr<Field> field)
 {
     // TODO
+}
+
+PlayerType Console_InputOutut::getPlayerType(std::string_view msg)
+{
+    // TODO
+    return PlayerType::human;
+}
+
+uint32_t Console_InputOutut::getCellsInRowToWinCount(uint32_t maxValue)
+{
+    // TODO
+    return 3;
 }
 
 CellPosition Console_InputOutut::readPlayerInput()

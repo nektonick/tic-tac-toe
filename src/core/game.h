@@ -1,30 +1,14 @@
-﻿#pragma once
+#pragma once
 #include <memory> // unique_ptr
 #include "field.h"
 #include "i_input_output.hpp"
 #include "player.h"
 
 
-class GameSettings
-{
-public:
-    GameSettings(PlayerType first_player_type, PlayerType second_player_type, int64_t cells_in_line_to_win);
-
-    PlayerType getFirstPlayerType() const noexcept;
-    PlayerType getSecondPlayerType() const noexcept;
-    uint32_t getCellsInLineToWin() const noexcept;
-
-private:
-    PlayerType first_player_type_;
-    PlayerType second_player_type_;
-    uint32_t cells_in_line_to_win_;
-};
-
-
 class Game
 {
 public:
-    Game(GameSettings, std::unique_ptr<I_InputOutput> input_output_interface);
+    Game(std::unique_ptr<I_InputOutput> input_output_interface);
 
     void play();
 

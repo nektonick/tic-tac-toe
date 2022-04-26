@@ -1,37 +1,14 @@
-﻿#include "game.h"
+#include "game.h"
 
-GameSettings::GameSettings(PlayerType first_player_type, PlayerType second_player_type, int64_t cells_in_line_to_win)
-    : first_player_type_(first_player_type)
-    , second_player_type_(second_player_type)
-    , cells_in_line_to_win_(cells_in_line_to_win)
-{
-    if(cells_in_line_to_win_ <= 1) {
-        throw std::invalid_argument("Invalid 'cells in line to win' count");
-    }
-}
-
-PlayerType GameSettings::getFirstPlayerType() const noexcept
-{
-    return first_player_type_;
-}
-
-PlayerType GameSettings::getSecondPlayerType() const noexcept
-{
-    return second_player_type_;
-}
-
-uint32_t GameSettings::getCellsInLineToWin() const noexcept
-{
-    return cells_in_line_to_win_;
-}
-
-
-Game::Game(GameSettings settings, std::unique_ptr<I_InputOutput> input_output)
+Game::Game(std::unique_ptr<I_InputOutput> input_output)
     : input_output_(std::move(input_output))
     , field_(std::make_shared<Field>())
-    , player1_(PlayersFabric::getPlayerOfType(settings.getFirstPlayerType(), MarkType::x, input_output_, field_))
-    , player2_(PlayersFabric::getPlayerOfType(settings.getSecondPlayerType(), MarkType::o, input_output_, field_))
 {
+    if(input_output_ == nullptr) {
+        throw std::invalid_argument("Unexpected nullptr: 'input_output'");
+    }
+    player1_ = PlayersFabric::getPlayerOfType(input_output_->getPlayerType("First player type"), MarkType::x, input_output_, field_);
+    player2_ = PlayersFabric::getPlayerOfType(input_output_->getPlayerType("Second player type"), MarkType::o, input_output_, field_);
 }
 
 void Game::play()

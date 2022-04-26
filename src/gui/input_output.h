@@ -30,6 +30,8 @@ public:
     void initField(std::shared_ptr<Field> field) override;
     void updateField(std::shared_ptr<Field> field) override;
 
+    PlayerType getPlayerType(std::string_view msg) override;
+    uint32_t getCellsInRowToWinCount(uint32_t maxValue) override;
     CellPosition readPlayerInput() override;
     void showMessage(std::string_view msg) override;
 
