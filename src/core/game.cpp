@@ -17,6 +17,7 @@ void Game::play()
         restart();
         while(gameShouldBeContinued()) {
             doTurn();
+            updateStatusAfterTurn();
         }
         processGameEnd();
     } catch(const std::exception& e) {
@@ -33,7 +34,7 @@ void Game::restart()
     field_->reset(newSize);
     is_player1_turn_ = true;
     turn_number_ = 0;
-    status_ = getNewStatus(is_player1_turn_);
+    status_ = Game::Status::should_be_continued;
     input_output_->initField(field_);
     input_output_->updateField(field_);
 }
@@ -46,14 +47,14 @@ bool Game::gameShouldBeContinued() const noexcept
 void Game::doTurn()
 {
     auto& current_player = is_player1_turn_ ? player1_ : player2_;
-    auto mark = current_player->getMark();
-    auto cell_to_mark = current_player->selectCellToMark();
-    field_->markCell(cell_to_mark, mark);
+    current_player->doTurn();
+}
+
+void Game::updateStatusAfterTurn()
+{
     status_ = getNewStatus(is_player1_turn_);
     ++turn_number_;
     is_player1_turn_ = !is_player1_turn_;
-
-    input_output_->updateField(field_);
 }
 Game::Status Game::getNewStatus(bool isPlayer1JustEndItsTurn)
 {

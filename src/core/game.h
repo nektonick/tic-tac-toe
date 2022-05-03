@@ -16,6 +16,7 @@ private:
     void restart();
     bool gameShouldBeContinued() const noexcept;
     void doTurn();
+    void updateStatusAfterTurn();
     enum class Status
     {
         player1_win,
