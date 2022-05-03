@@ -20,16 +20,19 @@ enum class PlayerType
 class I_Player
 {
 public:
-    I_Player(MarkType player_mark, std::shared_ptr<I_InputOutput> input_output_module);
+    I_Player(MarkType player_mark, std::shared_ptr<I_InputOutput> input_output_module, std::shared_ptr<Field> field);
     virtual ~I_Player() = default;
 
     MarkType getMark() const noexcept;
     virtual PlayerType getType() const noexcept = 0;
-    virtual CellPosition selectCellToMark() = 0;
+    void doTurn();
 
 protected:
+    virtual CellPosition selectCellToMark() = 0;
+
     const MarkType mark_;
     std::shared_ptr<I_InputOutput> io_;
+    std::shared_ptr<Field> field_;
 };
 
 
@@ -49,7 +52,7 @@ private:
 class Human_Player final : public I_Player
 {
 public:
-    Human_Player(MarkType player_mark, std::shared_ptr<I_InputOutput> input_output_module);
+    Human_Player(MarkType player_mark, std::shared_ptr<I_InputOutput> input_output_module, std::shared_ptr<Field> field);
 
     PlayerType getType() const noexcept override;
     CellPosition selectCellToMark() override;
