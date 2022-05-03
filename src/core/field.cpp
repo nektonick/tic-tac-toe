@@ -88,15 +88,17 @@ bool Field::isAllCellsMarked() const noexcept
     return markedCellsCount_ == totalCellsCount;
 }
 
-bool Field::isFieldContainsSomeMarksConsecutive(MarkType mark, uint32_t requiredMarksCount) const noexcept
+bool Field::isFieldContainsSomeMarksConsecutive(MarkType requiredMark, uint32_t requiredMarksCount) const noexcept
 {
     // going to check rows, columns and diagonals
+    const auto rowsCount = size_.getRowsCount();
+    const auto columnsCount = size_.getColumnsCount();
 
-    for(uint64_t row = 0; row < size_.getRowsCount(); ++row) {
+    for(uint64_t row = 0; row < rowsCount; ++row) {
         uint32_t numberOfMarksInRow = 0;
-        for(uint64_t column = 0; column < size_.getColumnsCount(); ++column) {
+        for(uint64_t column = 0; column < columnsCount; ++column) {
             auto currentMark = cells_[row][column].getMark();
-            if(currentMark.has_value() && currentMark.value() == mark) {
+            if(currentMark.has_value() && currentMark.value() == requiredMark) {
                 numberOfMarksInRow += 1;
             } else {
                 numberOfMarksInRow = 0;
@@ -107,11 +109,11 @@ bool Field::isFieldContainsSomeMarksConsecutive(MarkType mark, uint32_t required
         }
     }
 
-    for(uint64_t column = 0; column < size_.getColumnsCount(); ++column) {
+    for(uint64_t column = 0; column < columnsCount; ++column) {
         uint32_t numberOfMarksInRow = 0; // inRow here mean 'successively'
-        for(uint64_t row = 0; row < size_.getRowsCount(); ++row) {
+        for(uint64_t row = 0; row < rowsCount; ++row) {
             auto currentMark = cells_[row][column].getMark();
-            if(currentMark.has_value() && currentMark.value() == mark) {
+            if(currentMark.has_value() && currentMark.value() == requiredMark) {
                 numberOfMarksInRow += 1;
             } else {
                 numberOfMarksInRow = 0;
@@ -122,7 +124,53 @@ bool Field::isFieldContainsSomeMarksConsecutive(MarkType mark, uint32_t required
         }
     }
 
-    // TODO: diagonals
+
+    using vectorOfMarks = std::vector<std::optional<MarkType>>;
+    const size_t diagonalsCount = rowsCount + columnsCount - 1;
+    std::vector<vectorOfMarks> diagonalMarks(diagonalsCount, vectorOfMarks{});
+    std::vector<vectorOfMarks> backwardDiagonalMarks(diagonalsCount, vectorOfMarks{});
+    for(uint64_t row = 0; row < rowsCount; ++row) {
+        for(uint64_t column = 0; column < columnsCount; ++column) {
+            auto currentMark = cells_[row][column].getMark();
+            diagonalMarks[row + column].push_back(currentMark);
+            backwardDiagonalMarks[row + (columnsCount - 1 - column)].push_back(currentMark);
+        }
+    }
+
+    for(const auto& diagonal : diagonalMarks) {
+        if(diagonal.size() < requiredMarksCount) {
+            continue;
+        }
+        uint32_t numberOfMarksInRow = 0; // inRow here mean 'successively'
+        for(const auto& currentMark : diagonal) {
+            if(currentMark.has_value() && currentMark.value() == requiredMark) {
+                numberOfMarksInRow += 1;
+            } else {
+                numberOfMarksInRow = 0;
+            }
+            if(numberOfMarksInRow >= requiredMarksCount) {
+                return true;
+            }
+        }
+    }
+
+    // Same for backward diagonals
+    for(const auto& diagonal : backwardDiagonalMarks) {
+        if(diagonal.size() < requiredMarksCount) {
+            continue;
+        }
+        uint32_t numberOfMarksInRow = 0; // inRow here mean 'successively'
+        for(const auto& currentMark : diagonal) {
+            if(currentMark.has_value() && currentMark.value() == requiredMark) {
+                numberOfMarksInRow += 1;
+            } else {
+                numberOfMarksInRow = 0;
+            }
+            if(numberOfMarksInRow >= requiredMarksCount) {
+                return true;
+            }
+        }
+    }
 
     return false;
 }
