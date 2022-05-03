@@ -28,7 +28,8 @@ else() #gcc or clang
     if(CMAKE_BUILD_TYPE MATCHES "Debug")
         message("Debug mode")
         add_compile_options(
-            -O #Recommended optimizations for debugging
+            -O0 #Recommended optimizations for debugging
+            -D_FORTIFY_SOURCE=0 #Fortification needs enabled optimisation
             -g #Generate debugging information
         )
     else()
