@@ -46,6 +46,14 @@ void Cell::mark(MarkType mark)
     mark_ = mark;
 }
 
+void Cell::unmark()
+{
+    if(!isMarked()) {
+        throw std::logic_error("Cell should marked to unmark it");
+    }
+    mark_ = std::nullopt;
+}
+
 std::optional<MarkType> Cell::getMark() const noexcept
 {
     return mark_;
@@ -53,14 +61,26 @@ std::optional<MarkType> Cell::getMark() const noexcept
 
 
 Field::Field()
-    : Field(FieldSize())
+    : Field(FieldSize(3, 3), 3)
 {
 }
 
-Field::Field(FieldSize size)
+Field::Field(FieldSize size, uint32_t marksInRowToWin)
     : size_(size)
     , cells_(CellsGrid(size.getRowsCount(), CellsRow{size.getColumnsCount(), Cell{}}))
+    , marksInRowToWin_(marksInRowToWin)
 {
+    // TODO: validate marksInRowToWin
+}
+
+void Field::reset(FieldSize newSize, uint32_t marksInRowToWin)
+{
+    // TODO: validate marksInRowToWin
+    size_ = newSize;
+    marksInRowToWin_ = marksInRowToWin;
+    // NOTE: alternative: update cells state in loop if we don't want to recreate cells
+    cells_ = CellsGrid(size_.getRowsCount(), CellsRow{size_.getColumnsCount(), Cell()});
+    markedCellsCount_ = 0;
 }
 
 FieldSize Field::getFieldSize() const noexcept
@@ -75,10 +95,35 @@ void Field::markCell(const CellPosition& position, MarkType mark)
     markedCellsCount_ += 1;
 }
 
+void Field::unmarkCell(const CellPosition& position)
+{
+    auto& cell = getCellAt(position);
+    cell.unmark();
+    markedCellsCount_ -= 1;
+}
+
 std::optional<MarkType> Field::getCellMark(const CellPosition& position) const
 {
     const auto& cell = getCellAt(position);
     return cell.getMark();
+}
+
+std::vector<CellPosition> Field::getEmptyCells() const noexcept
+{
+    std::vector<CellPosition> emptyCellsPositions;
+    emptyCellsPositions.reserve(size_.getColumnsCount() * size_.getRowsCount() - markedCellsCount_);
+
+    const auto rowsCount = size_.getRowsCount();
+    const auto columnsCount = size_.getColumnsCount();
+    for(uint64_t row = 0; row < rowsCount; ++row) {
+        for(uint64_t column = 0; column < columnsCount; ++column) {
+            auto currentMark = cells_[row][column].getMark();
+            if(!currentMark) {
+                emptyCellsPositions.push_back(CellPosition(row, column));
+            }
+        }
+    }
+    return emptyCellsPositions;
 }
 
 bool Field::isAllCellsMarked() const noexcept
@@ -86,6 +131,11 @@ bool Field::isAllCellsMarked() const noexcept
     // NOTE: potential overflow here if RowsCount is too much
     uint64_t totalCellsCount = size_.getRowsCount() * size_.getColumnsCount();
     return markedCellsCount_ == totalCellsCount;
+}
+
+bool Field::isPlayerWin(MarkType playerMark) const noexcept
+{
+    return isFieldContainsSomeMarksConsecutive(playerMark, marksInRowToWin_);
 }
 
 bool Field::isFieldContainsSomeMarksConsecutive(MarkType requiredMark, uint32_t requiredMarksCount) const noexcept
@@ -173,14 +223,6 @@ bool Field::isFieldContainsSomeMarksConsecutive(MarkType requiredMark, uint32_t 
     }
 
     return false;
-}
-
-void Field::reset(FieldSize newSize)
-{
-    size_ = newSize;
-    // TODO: alternative: update cells state in loop if we don't want to recreate cells
-    cells_ = CellsGrid(size_.getRowsCount(), CellsRow{size_.getColumnsCount(), Cell()});
-    markedCellsCount_ = 0;
 }
 
 const Cell& Field::getCellAt(const CellPosition& position) const

@@ -22,7 +22,7 @@ public:
     virtual void updateField(std::shared_ptr<Field> field) = 0;
 
     virtual PlayerType getPlayerType(std::string_view msg) = 0;
-    virtual uint32_t getCellsInRowToWinCount(uint32_t maxValue) = 0;
+    virtual uint32_t getMarksInRowToWinCount(uint32_t maxValue) = 0;
     virtual CellPosition readPlayerInput() = 0;
 
     virtual void showMessage(std::string_view msg) = 0;

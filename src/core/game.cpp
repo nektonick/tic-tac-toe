@@ -2,13 +2,15 @@
 
 Game::Game(std::unique_ptr<I_InputOutput> input_output)
     : input_output_(std::move(input_output))
-    , field_(std::make_shared<Field>())
+    , field_(std::make_shared<Field>()) // Default field will be reset in restart()
 {
     if(input_output_ == nullptr) {
         throw std::invalid_argument("Unexpected nullptr: 'input_output'");
     }
-    player1_ = PlayersFabric::getPlayerOfType(input_output_->getPlayerType("First player type"), MarkType::x, input_output_, field_);
-    player2_ = PlayersFabric::getPlayerOfType(input_output_->getPlayerType("Second player type"), MarkType::o, input_output_, field_);
+    player1_ = PlayersFabric::getPlayerOfType(input_output_->getPlayerType("First player type"),
+                                              MarkType::x, input_output_, field_);
+    player2_ = PlayersFabric::getPlayerOfType(input_output_->getPlayerType("Second player type"),
+                                              MarkType::o, input_output_, field_);
 }
 
 void Game::play()
@@ -29,9 +31,9 @@ void Game::play()
 void Game::restart()
 {
     auto newSize = input_output_->readFieldSize();
-    auto maxAllowedCellsInRowToWinCount = std::max(newSize.getColumnsCount(), newSize.getRowsCount()); // TODO: validate
-    cellsInRowToWin_ = input_output_->getCellsInRowToWinCount(maxAllowedCellsInRowToWinCount);
-    field_->reset(newSize);
+    auto maxAllowedMarksInRowToWinCount = std::max(newSize.getColumnsCount(), newSize.getRowsCount()); // TODO: validate
+    const auto marksInRowToWin = input_output_->getMarksInRowToWinCount(maxAllowedMarksInRowToWinCount);
+    field_->reset(newSize, marksInRowToWin);
     is_player1_turn_ = true;
     turn_number_ = 0;
     status_ = Game::Status::should_be_continued;
@@ -56,7 +58,7 @@ void Game::updateStatusAfterTurn()
     ++turn_number_;
     is_player1_turn_ = !is_player1_turn_;
 }
-Game::Status Game::getNewStatus(bool isPlayer1JustEndItsTurn)
+Game::Status Game::getNewStatus(bool isPlayer1JustEndItsTurn) const noexcept
 {
     /* Cases:
      * - all cells marked
@@ -72,7 +74,7 @@ Game::Status Game::getNewStatus(bool isPlayer1JustEndItsTurn)
     // This function called after player turn, so we don't check is other player win
     auto& current_player = isPlayer1JustEndItsTurn ? player1_ : player2_;
     auto current_player_mark = current_player->getMark();
-    bool isCurrentPlayerWin = field_->isFieldContainsSomeMarksConsecutive(current_player_mark, cellsInRowToWin_);
+    bool isCurrentPlayerWin = field_->isPlayerWin(current_player_mark);
 
     if(isCurrentPlayerWin) {
         return isPlayer1JustEndItsTurn ? Status::player1_win : Status::player2_win;

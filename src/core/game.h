@@ -24,11 +24,10 @@ private:
         ended_in_a_draw,
         should_be_continued
     };
-    Status getNewStatus(bool isPlayer1JustEndItsTurn);
+    Status getNewStatus(bool isPlayer1JustEndItsTurn) const noexcept;
     void processGameEnd();
 
-    uint32_t cellsInRowToWin_ = 3;
-    Status status_;
+    Status status_{Status::should_be_continued};
     std::shared_ptr<I_InputOutput> input_output_; // shared with human players
     std::shared_ptr<Field> field_; // shared with AI_module
     std::unique_ptr<I_Player> player1_;

@@ -1,4 +1,4 @@
-﻿#include "input_output.h"
+#include "input_output.h"
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPushButton>
@@ -102,7 +102,7 @@ PlayerType GUI_InputOutput::getPlayerType(std::string_view msg)
     return type == 0 ? PlayerType::AI : PlayerType::human;
 }
 
-uint32_t GUI_InputOutput::getCellsInRowToWinCount(uint32_t maxValue)
+uint32_t GUI_InputOutput::getMarksInRowToWinCount(uint32_t maxValue)
 {
     QString windowTitle = "Input cells to win count";
     QString inputTitle = "Cells in row to win:";

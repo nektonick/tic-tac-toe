@@ -29,6 +29,7 @@ public:
 
     bool isMarked() const noexcept;
     void mark(MarkType);
+    void unmark();
     std::optional<MarkType> getMark() const noexcept;
 
 private:
@@ -42,18 +43,21 @@ class Field
 {
 public:
     Field();
-    explicit Field(FieldSize size);
-    void reset(FieldSize newSize);
+    explicit Field(FieldSize size, uint32_t marksInRowToWin);
+    void reset(FieldSize newSize, uint32_t marksInRowToWin);
 
     FieldSize getFieldSize() const noexcept;
     bool isAllCellsMarked() const noexcept;
-    bool isFieldContainsSomeMarksConsecutive(MarkType, uint32_t requiredMarksCount) const noexcept;
+    bool isPlayerWin(MarkType playerMark) const noexcept;
     std::optional<MarkType> getCellMark(const CellPosition& position) const;
+    std::vector<CellPosition> getEmptyCells() const noexcept;
 
-    // NOTE: cell can't be re-marked
+    // NOTE: cell can't be re-marked with other mark
     void markCell(const CellPosition& position, MarkType mark);
+    void unmarkCell(const CellPosition& position);
 
 private:
+    bool isFieldContainsSomeMarksConsecutive(MarkType, uint32_t requiredMarksCount) const noexcept;
     const Cell& getCellAt(const CellPosition& position) const;
     Cell& getCellAt(const CellPosition& position); // The same as function above but non-const
     bool isPositionCorrect(const CellPosition& position) const noexcept;
@@ -61,4 +65,5 @@ private:
     FieldSize size_;
     CellsGrid cells_;
     uint64_t markedCellsCount_ = 0;
+    uint32_t marksInRowToWin_;
 };

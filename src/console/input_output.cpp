@@ -56,7 +56,7 @@ PlayerType Console_InputOutut::getPlayerType(std::string_view msg)
     return static_cast<PlayerType>(input);
 }
 
-uint32_t Console_InputOutut::getCellsInRowToWinCount(uint32_t maxValue)
+uint32_t Console_InputOutut::getMarksInRowToWinCount(uint32_t maxValue)
 {
     int64_t input = -1;
     auto doInput = [&input, &maxValue]() {
