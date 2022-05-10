@@ -28,7 +28,7 @@ FieldSize GUI_InputOutput::readFieldSize()
     QString windowTitle = "Input field size";
     QString inputTitle = "Field size(N*N):";
     int defaultValue = 3;
-    int minValue = 1;
+    int minValue = 2;
     int maxValue = 1000;
     int step = 1;
     bool ok = false;
