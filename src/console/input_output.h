@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <optional>
 #include "i_input_output.hpp"
 
 
@@ -15,4 +16,8 @@ public:
     uint32_t getCellsInRowToWinCount(uint32_t maxValues) override;
     CellPosition readPlayerInput() override;
     void showMessage(std::string_view msg) override;
+
+private:
+    void printField(std::shared_ptr<Field>&& field) const noexcept;
+    void printMark(const std::optional<MarkType>& mark) const noexcept;
 };
