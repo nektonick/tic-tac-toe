@@ -14,3 +14,4 @@ AI implementation use minimax algorithm with Alpha-beta Pruning.
     - [Stack overflow 1](https://stackoverflow.com/questions/51364491/minimax-alpha-beta-pruning-algorithm-takes-too-much-time-to-solve-tic-tac-toe-1)
     - [Stack overflow 2](https://stackoverflow.com/questions/51427156/how-to-solve-tic-tac-toe-4x4-game-using-minimax-algorithem-and-alpha-beta-prunin)
     - [Habr (on Russian)](https://habr.com/ru/post/146088/) and [source](https://github.com/TheHorse/RabbitMinMax/blob/master/game.cpp)
+    - [Evaluation function example](https://www.ivanpalazzo.com/post/tic-tac-toe-on-steroids-oxxo-part-3-the-evaluation-function)
