@@ -1,4 +1,4 @@
-#include "input_output.h"
+﻿#include "input_output.h"
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPushButton>
@@ -64,6 +64,7 @@ void GUI_InputOutput::initField(std::shared_ptr<Field> field)
 
     fieldWidget->setLayout(gridLayout);
     scrollArea->setWidget(fieldWidget);
+    fieldWidget->repaint();
 }
 
 void GUI_InputOutput::updateField(std::shared_ptr<Field> field)
@@ -80,6 +81,7 @@ void GUI_InputOutput::updateField(std::shared_ptr<Field> field)
             button->setText(newText);
         }
     }
+    fieldWidget->repaint();
 }
 
 PlayerType GUI_InputOutput::getPlayerType(std::string_view msg)
