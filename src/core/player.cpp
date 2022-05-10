@@ -38,7 +38,7 @@ PlayerType AI_Player::getType() const noexcept
 
 CellPosition AI_Player::selectCellToMark()
 {
-    return ai_.makeMove();
+    return ai_.makeMove(getMark());
 }
 
 
