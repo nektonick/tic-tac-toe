@@ -10,13 +10,15 @@ class AI_Core
 {
 public:
     AI_Core(std::shared_ptr<Field>);
-    CellPosition makeMove(MarkType currentPlayerMark);
+    CellPosition makeMove(MarkType playerMark);
 
 private:
-    CellPosition getBestMove(MarkType currentPlayerMark);
-    using CellScore = int;
-    CellScore minimax(MarkType currentPlayerMark, bool isCurrentPlayerMove, int depth, int alpha, int beta);
+    CellPosition getBestMove();
+    using Score = int;
+    Score minimax(bool isOurMove, int depth, int alpha, int beta);
+    Score getCurrentStateScore(bool isPlayerWin, bool isOpponentWin, bool isGameEnded, int currentDepth);
 
+    MarkType ourMark_{MarkType::x};
     uint32_t minMaxCallsCount = 0; // For statistic
     CellPosition currentBestMove{0, 0};
     std::shared_ptr<Field> field_;
